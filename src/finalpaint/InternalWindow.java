@@ -5,21 +5,17 @@
  */
 package finalpaint;
 
-import java.beans.PropertyVetoException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import sm.ata.graphics.Canvass2D;
-import sm.ata.iu.ImageCanvass2D;
+import sm.ata.ui.ImageCanvass2D;
 
 /**
  *
  * @author Hasbr
  */
 public class InternalWindow extends javax.swing.JInternalFrame {
-    
+
     private MainJFrame myMainJFrame;
     private boolean inside = false;
-    
+
     /**
      * Create new form InternalWindow by default
      */
@@ -43,7 +39,7 @@ public class InternalWindow extends javax.swing.JInternalFrame {
     public ImageCanvass2D getCanvass2D() {
         return imageCanvass2D;
     }
-    
+
     /**
      * This method changes the canvass in the internal frame
      * @param imageCanvass2D to change the internal frame canvass
@@ -51,7 +47,7 @@ public class InternalWindow extends javax.swing.JInternalFrame {
     public void setCanvass2D(ImageCanvass2D imageCanvass2D) {
         this.imageCanvass2D = imageCanvass2D;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -62,7 +58,7 @@ public class InternalWindow extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        imageCanvass2D = new sm.ata.iu.ImageCanvass2D();
+        imageCanvass2D = new sm.ata.ui.ImageCanvass2D();
 
         setClosable(true);
         setIconifiable(true);
@@ -86,21 +82,6 @@ public class InternalWindow extends javax.swing.JInternalFrame {
             }
         });
 
-        imageCanvass2D.setBackground(new java.awt.Color(204, 204, 204));
-        imageCanvass2D.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                imageCanvass2DMouseMoved(evt);
-            }
-        });
-        imageCanvass2D.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                imageCanvass2DMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                imageCanvass2DMouseExited(evt);
-            }
-        });
-
         javax.swing.GroupLayout imageCanvass2DLayout = new javax.swing.GroupLayout(imageCanvass2D);
         imageCanvass2D.setLayout(imageCanvass2DLayout);
         imageCanvass2DLayout.setHorizontalGroup(
@@ -120,7 +101,7 @@ public class InternalWindow extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * This method take the event of activation of the frame and change the 
+     * This method take the event of activation of the frame and change the
      * buttons state in the main frame
      * @param evt action event
      */
@@ -149,7 +130,7 @@ public class InternalWindow extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private sm.ata.iu.ImageCanvass2D imageCanvass2D;
+    private sm.ata.ui.ImageCanvass2D imageCanvass2D;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

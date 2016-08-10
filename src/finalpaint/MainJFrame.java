@@ -6,23 +6,19 @@
 package finalpaint;
 
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.awt.image.LookupTable;
 import java.awt.image.RescaleOp;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.ComboBox;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import sm.ata.graphics.Canvass2D;
-import sm.ata.iu.ImageCanvass2D;
+import sm.ata.ui.ImageCanvass2D;
 import sm.image.LookupTableProducer;
 
 /**
@@ -816,7 +812,7 @@ public class MainJFrame extends javax.swing.JFrame {
         InternalWindow currentWindow;
         currentWindow = (InternalWindow)Desktop.getSelectedFrame();
         if (currentWindow != null)
-            currentWindow.getCanvass2D().changeSmooth();
+            currentWindow.getCanvass2D().changeAntialiashing();
     }//GEN-LAST:event_ButtonSmoothActionPerformed
     
     /**
