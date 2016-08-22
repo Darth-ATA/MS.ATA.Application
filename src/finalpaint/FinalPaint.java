@@ -7,7 +7,7 @@ package finalpaint;
 
 /**
  *
- * @author Hasbr
+ * @author Darth-ATA
  */
 public class FinalPaint {
 

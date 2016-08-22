@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import sm.ata.graphics.Canvass2D;
+import static sm.ata.shapes.GAttribute.FILL_OFF;
+import static sm.ata.shapes.GAttribute.FILL_ON;
 import sm.ata.ui.ImageCanvass2D;
 import sm.image.LookupTableProducer;
 
@@ -90,13 +92,16 @@ public class MainJFrame extends javax.swing.JFrame {
             }
 
             // Fill button
-            this.ButtonFill.setSelected(currentWindow.getCanvass2D().isFill());
+            if(currentWindow.getCanvass2D().getFillMode() == FILL_OFF)
+                this.ButtonFill.setSelected(false);
+            else
+                this.ButtonFill.setSelected(true);
             // Thickness spinner
             this.SpinnerThick.setValue(currentWindow.getCanvass2D().getThick());
             // Smooth button
             this.ButtonSmooth.setSelected(currentWindow.getCanvass2D().isSmooth());
             // Transparency button
-            this.ButtonTransparency.setSelected(currentWindow.getCanvass2D().isTransparency());
+            //this.ButtonTransparency.setSelected(currentWindow.getCanvass2D().isTransparency());
             this.updatePanelExtra();                      
         }
     }
@@ -118,22 +123,31 @@ public class MainJFrame extends javax.swing.JFrame {
         ButtonOpen = new javax.swing.JButton();
         ButtonSave = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        Desktop = new javax.swing.JDesktopPane();
+        BotPanel = new javax.swing.JPanel();
+        ExtraPanel = new javax.swing.JPanel();
+        PanelDraw = new javax.swing.JPanel();
         FormsBar = new javax.swing.JPanel();
         ButtonPoint = new javax.swing.JToggleButton();
         ButtonLine = new javax.swing.JToggleButton();
         ButtonRectangle = new javax.swing.JToggleButton();
         ButtonEllipse = new javax.swing.JToggleButton();
+        ButtonArc = new javax.swing.JToggleButton();
         ButtonEdit = new javax.swing.JToggleButton();
-        jSeparator2 = new javax.swing.JSeparator();
-        AttributesBar = new javax.swing.JPanel();
+        ShapesColorBar = new javax.swing.JPanel();
         ComboBoxColor = new javax.swing.JComboBox<>();
-        SpinnerThick = new javax.swing.JSpinner();
         ButtonFill = new javax.swing.JToggleButton();
-        ButtonTransparency = new javax.swing.JToggleButton();
+        BorderBar = new javax.swing.JPanel();
+        ThickColor = new javax.swing.JPanel();
+        SpinnerThick = new javax.swing.JSpinner();
+        ButtonColorBorder = new javax.swing.JButton();
+        ComboBoxBorderType = new javax.swing.JComboBox<>();
+        PanelFillColorType = new javax.swing.JPanel();
+        ComboBoxFill = new javax.swing.JComboBox<>();
+        PanelAntialiasingAndTransparency = new javax.swing.JPanel();
         ButtonSmooth = new javax.swing.JToggleButton();
-        Desktop = new javax.swing.JDesktopPane();
-        BotPanel = new javax.swing.JPanel();
-        ExtraPanel = new javax.swing.JPanel();
+        SliderBrightness1 = new javax.swing.JSlider();
+        PanelImage = new javax.swing.JPanel();
         PanelBrightness = new javax.swing.JPanel();
         SliderBrightness = new javax.swing.JSlider();
         PanelFilter = new javax.swing.JPanel();
@@ -160,7 +174,7 @@ public class MainJFrame extends javax.swing.JFrame {
         SliderBinary = new javax.swing.JSlider();
         PanelThresholding = new javax.swing.JPanel();
         SliderThresholding = new javax.swing.JSlider();
-        jPanel1 = new javax.swing.JPanel();
+        PanelStatus = new javax.swing.JPanel();
         BarStatus = new javax.swing.JTextField();
         PixelValue = new javax.swing.JTextField();
         MenuBar = new javax.swing.JMenuBar();
@@ -215,6 +229,34 @@ public class MainJFrame extends javax.swing.JFrame {
         jSeparator1.setPreferredSize(new java.awt.Dimension(5, 50));
         ToolBar.add(jSeparator1);
 
+        ToolsAndWindow.add(ToolBar, java.awt.BorderLayout.PAGE_START);
+
+        javax.swing.GroupLayout DesktopLayout = new javax.swing.GroupLayout(Desktop);
+        Desktop.setLayout(DesktopLayout);
+        DesktopLayout.setHorizontalGroup(
+            DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1808, Short.MAX_VALUE)
+        );
+        DesktopLayout.setVerticalGroup(
+            DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 531, Short.MAX_VALUE)
+        );
+
+        ToolsAndWindow.add(Desktop, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(ToolsAndWindow, java.awt.BorderLayout.CENTER);
+
+        BotPanel.setPreferredSize(new java.awt.Dimension(130, 215));
+        BotPanel.setLayout(new java.awt.BorderLayout());
+
+        ExtraPanel.setMinimumSize(new java.awt.Dimension(1196, 50));
+        ExtraPanel.setPreferredSize(new java.awt.Dimension(1165, 70));
+        ExtraPanel.setLayout(new java.awt.BorderLayout());
+
+        PanelDraw.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        FormsBar.setBorder(javax.swing.BorderFactory.createTitledBorder("Shapes"));
+
         ButtonGroupForms.add(ButtonPoint);
         ButtonPoint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/punto.png"))); // NOI18N
         ButtonPoint.setToolTipText("Point");
@@ -259,6 +301,18 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         FormsBar.add(ButtonEllipse);
 
+        ButtonGroupForms.add(ButtonArc);
+        ButtonArc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/linea.png"))); // NOI18N
+        ButtonArc.setToolTipText("Point");
+        ButtonArc.setMaximumSize(new java.awt.Dimension(57, 33));
+        ButtonArc.setMinimumSize(new java.awt.Dimension(57, 33));
+        ButtonArc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonArcActionPerformed(evt);
+            }
+        });
+        FormsBar.add(ButtonArc);
+
         ButtonGroupForms.add(ButtonEdit);
         ButtonEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/seleccion.png"))); // NOI18N
         ButtonEdit.setToolTipText("Edit");
@@ -270,11 +324,9 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         FormsBar.add(ButtonEdit);
 
-        ToolBar.add(FormsBar);
+        PanelDraw.add(FormsBar);
 
-        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        jSeparator2.setPreferredSize(new java.awt.Dimension(5, 50));
-        ToolBar.add(jSeparator2);
+        ShapesColorBar.setBorder(javax.swing.BorderFactory.createTitledBorder("Shapes Color"));
 
         ComboBoxColor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Black", "White ", "Red ", "Blue ", "Green ", "Yellow" }));
         ComboBoxColor.setToolTipText("Color");
@@ -283,16 +335,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 ComboBoxColorActionPerformed(evt);
             }
         });
-        AttributesBar.add(ComboBoxColor);
-
-        SpinnerThick.setToolTipText("Width");
-        SpinnerThick.setName(""); // NOI18N
-        SpinnerThick.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                SpinnerThickStateChanged(evt);
-            }
-        });
-        AttributesBar.add(SpinnerThick);
+        ShapesColorBar.add(ComboBoxColor);
 
         ButtonFill.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/rellenar.png"))); // NOI18N
         ButtonFill.setToolTipText("Fill");
@@ -302,17 +345,47 @@ public class MainJFrame extends javax.swing.JFrame {
                 ButtonFillActionPerformed(evt);
             }
         });
-        AttributesBar.add(ButtonFill);
+        ShapesColorBar.add(ButtonFill);
 
-        ButtonTransparency.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/transparencia.png"))); // NOI18N
-        ButtonTransparency.setToolTipText("Transparency");
-        ButtonTransparency.setPreferredSize(null);
-        ButtonTransparency.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonTransparencyActionPerformed(evt);
+        PanelDraw.add(ShapesColorBar);
+
+        BorderBar.setBorder(javax.swing.BorderFactory.createTitledBorder("Border"));
+        BorderBar.setLayout(new java.awt.BorderLayout());
+
+        SpinnerThick.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        SpinnerThick.setToolTipText("Width");
+        SpinnerThick.setName(""); // NOI18N
+        SpinnerThick.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                SpinnerThickStateChanged(evt);
             }
         });
-        AttributesBar.add(ButtonTransparency);
+        ThickColor.add(SpinnerThick);
+
+        ButtonColorBorder.setBackground(new java.awt.Color(0, 0, 0));
+        ButtonColorBorder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonColorBorderActionPerformed(evt);
+            }
+        });
+        ThickColor.add(ButtonColorBorder);
+
+        BorderBar.add(ThickColor, java.awt.BorderLayout.PAGE_END);
+
+        ComboBoxBorderType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        BorderBar.add(ComboBoxBorderType, java.awt.BorderLayout.CENTER);
+
+        PanelDraw.add(BorderBar);
+
+        PanelFillColorType.setBorder(javax.swing.BorderFactory.createTitledBorder("Fill"));
+
+        ComboBoxFill.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        PanelFillColorType.add(ComboBoxFill);
+
+        PanelDraw.add(PanelFillColorType);
+
+        PanelAntialiasingAndTransparency.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Smooth and transparency"));
+        PanelAntialiasingAndTransparency.setPreferredSize(new java.awt.Dimension(270, 70));
 
         ButtonSmooth.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/alisar.png"))); // NOI18N
         ButtonSmooth.setToolTipText("Smooth");
@@ -321,33 +394,24 @@ public class MainJFrame extends javax.swing.JFrame {
                 ButtonSmoothActionPerformed(evt);
             }
         });
-        AttributesBar.add(ButtonSmooth);
+        PanelAntialiasingAndTransparency.add(ButtonSmooth);
 
-        ToolBar.add(AttributesBar);
+        SliderBrightness1.setMaximum(255);
+        SliderBrightness1.setMinimum(-255);
+        SliderBrightness1.setValue(255);
+        SliderBrightness1.setPreferredSize(new java.awt.Dimension(160, 26));
+        SliderBrightness1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                SliderBrightness1StateChanged(evt);
+            }
+        });
+        PanelAntialiasingAndTransparency.add(SliderBrightness1);
 
-        ToolsAndWindow.add(ToolBar, java.awt.BorderLayout.PAGE_START);
+        PanelDraw.add(PanelAntialiasingAndTransparency);
 
-        javax.swing.GroupLayout DesktopLayout = new javax.swing.GroupLayout(Desktop);
-        Desktop.setLayout(DesktopLayout);
-        DesktopLayout.setHorizontalGroup(
-            DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1808, Short.MAX_VALUE)
-        );
-        DesktopLayout.setVerticalGroup(
-            DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 636, Short.MAX_VALUE)
-        );
+        ExtraPanel.add(PanelDraw, java.awt.BorderLayout.PAGE_START);
 
-        ToolsAndWindow.add(Desktop, java.awt.BorderLayout.CENTER);
-
-        getContentPane().add(ToolsAndWindow, java.awt.BorderLayout.CENTER);
-
-        BotPanel.setPreferredSize(new java.awt.Dimension(67, 110));
-        BotPanel.setLayout(new java.awt.BorderLayout());
-
-        ExtraPanel.setMinimumSize(new java.awt.Dimension(1196, 50));
-        ExtraPanel.setPreferredSize(new java.awt.Dimension(1165, 70));
-        ExtraPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        PanelImage.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         PanelBrightness.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Brightness"));
         PanelBrightness.setPreferredSize(new java.awt.Dimension(180, 70));
@@ -363,7 +427,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         PanelBrightness.add(SliderBrightness);
 
-        ExtraPanel.add(PanelBrightness);
+        PanelImage.add(PanelBrightness);
 
         PanelFilter.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Filter"));
         PanelFilter.setToolTipText("");
@@ -377,7 +441,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         PanelFilter.add(ComboBoxFilter);
 
-        ExtraPanel.add(PanelFilter);
+        PanelImage.add(PanelFilter);
 
         PanelContrast.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Contrast"));
         PanelContrast.setPreferredSize(new java.awt.Dimension(230, 70));
@@ -409,7 +473,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         PanelContrast.add(ButtonDarkerContrast);
 
-        ExtraPanel.add(PanelContrast);
+        PanelImage.add(PanelContrast);
 
         PanelSin.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), " "));
         PanelSin.setPreferredSize(new java.awt.Dimension(230, 70));
@@ -439,7 +503,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         PanelSin.add(ButtonGradient);
 
-        ExtraPanel.add(PanelSin);
+        PanelImage.add(PanelSin);
 
         PanelRotation.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Rotation"));
         PanelRotation.setPreferredSize(new java.awt.Dimension(330, 70));
@@ -483,7 +547,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         PanelRotation.add(Button270G);
 
-        ExtraPanel.add(PanelRotation);
+        PanelImage.add(PanelRotation);
 
         PanelScala.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Scala"));
         PanelScala.setPreferredSize(new java.awt.Dimension(180, 70));
@@ -506,7 +570,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         PanelScala.add(ButtonReduce);
 
-        ExtraPanel.add(PanelScala);
+        PanelImage.add(PanelScala);
 
         PanelBinary.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Binary"));
         PanelBinary.setPreferredSize(new java.awt.Dimension(270, 70));
@@ -538,7 +602,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         PanelBinary.add(SliderBinary);
 
-        ExtraPanel.add(PanelBinary);
+        PanelImage.add(PanelBinary);
 
         PanelThresholding.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Thresholding"));
         PanelThresholding.setPreferredSize(new java.awt.Dimension(180, 70));
@@ -554,29 +618,31 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         PanelThresholding.add(SliderThresholding);
 
-        ExtraPanel.add(PanelThresholding);
+        PanelImage.add(PanelThresholding);
+
+        ExtraPanel.add(PanelImage, java.awt.BorderLayout.CENTER);
 
         BotPanel.add(ExtraPanel, java.awt.BorderLayout.CENTER);
 
-        jPanel1.setMinimumSize(new java.awt.Dimension(67, 25));
-        jPanel1.setPreferredSize(new java.awt.Dimension(1808, 30));
-        jPanel1.setLayout(new java.awt.BorderLayout(0, 3));
+        PanelStatus.setMinimumSize(new java.awt.Dimension(67, 25));
+        PanelStatus.setPreferredSize(new java.awt.Dimension(1808, 30));
+        PanelStatus.setLayout(new java.awt.BorderLayout(0, 3));
 
         BarStatus.setEditable(false);
         BarStatus.setBorder(null);
         BarStatus.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         BarStatus.setEnabled(false);
         BarStatus.setPreferredSize(new java.awt.Dimension(140, 16));
-        jPanel1.add(BarStatus, java.awt.BorderLayout.LINE_START);
+        PanelStatus.add(BarStatus, java.awt.BorderLayout.LINE_START);
 
         PixelValue.setEditable(false);
         PixelValue.setBorder(null);
         PixelValue.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         PixelValue.setEnabled(false);
         PixelValue.setPreferredSize(new java.awt.Dimension(200, 16));
-        jPanel1.add(PixelValue, java.awt.BorderLayout.EAST);
+        PanelStatus.add(PixelValue, java.awt.BorderLayout.EAST);
 
-        BotPanel.add(jPanel1, java.awt.BorderLayout.PAGE_END);
+        BotPanel.add(PanelStatus, java.awt.BorderLayout.PAGE_END);
 
         getContentPane().add(BotPanel, java.awt.BorderLayout.PAGE_END);
 
@@ -789,32 +855,8 @@ public class MainJFrame extends javax.swing.JFrame {
             this.BarStatus.setVisible(true);
     }//GEN-LAST:event_MenuItemStatusBarActionPerformed
     
-    /**
-     * This method take the event of action performed and change the transparency
-     * of the canvass
-     * @param evt action event
-     */
-    private void ButtonTransparencyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonTransparencyActionPerformed
-        // TODO add your handling code here:
-        InternalWindow currentWindow;
-        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
-        if (currentWindow != null)
-            currentWindow.getCanvass2D().changeTransparency();
-    }//GEN-LAST:event_ButtonTransparencyActionPerformed
-    
-    /**
-     * This method take the event of action performed and change the smooth
-     * of the canvass
-     * @param evt action event
-     */
-    private void ButtonSmoothActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonSmoothActionPerformed
-        // TODO add your handling code here:
-        InternalWindow currentWindow;
-        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
-        if (currentWindow != null)
-            currentWindow.getCanvass2D().changeAntialiashing();
-    }//GEN-LAST:event_ButtonSmoothActionPerformed
-    
+   
+   
     /**
      * This method take the event of action performed and change the edit
      * in the canvass
@@ -837,8 +879,12 @@ public class MainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         InternalWindow currentWindow;
         currentWindow = (InternalWindow)Desktop.getSelectedFrame();
-        if (currentWindow != null)
-            currentWindow.getCanvass2D().changeFillMode();
+        if (currentWindow != null){
+            if (currentWindow.getCanvass2D().getFillMode() == FILL_OFF)
+                currentWindow.getCanvass2D().setFillMode(FILL_ON); 
+            else
+                currentWindow.getCanvass2D().setFillMode(FILL_OFF);
+        }
     }//GEN-LAST:event_ButtonFillActionPerformed
 
     /**
@@ -850,8 +896,8 @@ public class MainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         InternalWindow currentWindow;
         currentWindow = (InternalWindow)Desktop.getSelectedFrame();
-        if (currentWindow != null)
-            currentWindow.getCanvass2D().setThick((int) SpinnerThick.getValue());
+        /*if (currentWindow != null)
+            currentWindow.getCanvass2D().setThick((int) SpinnerThick.getValue());*/
     }//GEN-LAST:event_SpinnerThickStateChanged
     
     /**
@@ -874,10 +920,10 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     private void MenuItemAttributeBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemAttributeBarActionPerformed
         // TODO add your handling code here:
-        if (this.AttributesBar.isVisible())
-            this.AttributesBar.setVisible(false);
+        if (this.ShapesColorBar.isVisible())
+            this.ShapesColorBar.setVisible(false);
         else
-            this.AttributesBar.setVisible(true);
+            this.ShapesColorBar.setVisible(true);
     }//GEN-LAST:event_MenuItemAttributeBarActionPerformed
 
     private void ComboBoxColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxColorActionPerformed
@@ -1244,6 +1290,29 @@ public class MainJFrame extends javax.swing.JFrame {
         
     }//GEN-LAST:event_SliderThresholdingStateChanged
 
+    private void ButtonArcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonArcActionPerformed
+        // TODO add your handling code here:
+        InternalWindow currentWindow;
+        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
+        if (currentWindow != null)
+            currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_ARC);
+        changeTextStatus("Arc");
+    }//GEN-LAST:event_ButtonArcActionPerformed
+
+    private void ButtonColorBorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonColorBorderActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ButtonColorBorderActionPerformed
+
+    private void SliderBrightness1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_SliderBrightness1StateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SliderBrightness1StateChanged
+
+//GEN-FIRST:event_ButtonSmoothActionPerformed
+    private void ButtonSmoothActionPerformed(java.awt.event.ActionEvent evt){
+        // TODO add your handling code here:
+    }
+//GEN-LAST:event_ButtonSmoothActionPerformed
+
     /**
      * Changes the text in the PixelTextStatus
      * @param p the point of the cursor
@@ -1291,13 +1360,15 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel AttributesBar;
     private javax.swing.JTextField BarStatus;
+    private javax.swing.JPanel BorderBar;
     private javax.swing.JPanel BotPanel;
     private javax.swing.JButton Button180G;
     private javax.swing.JButton Button270G;
     private javax.swing.JButton Button90G;
+    private javax.swing.JToggleButton ButtonArc;
     private javax.swing.JButton ButtonAugmentate;
+    private javax.swing.JButton ButtonColorBorder;
     private javax.swing.JButton ButtonDarkerContrast;
     private javax.swing.JToggleButton ButtonEdit;
     private javax.swing.JToggleButton ButtonEllipse;
@@ -1318,8 +1389,9 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton ButtonSepia;
     private javax.swing.JButton ButtonSin;
     private javax.swing.JToggleButton ButtonSmooth;
-    private javax.swing.JToggleButton ButtonTransparency;
+    private javax.swing.JComboBox<String> ComboBoxBorderType;
     private javax.swing.JComboBox<String> ComboBoxColor;
+    private javax.swing.JComboBox<String> ComboBoxFill;
     private javax.swing.JComboBox<String> ComboBoxFilter;
     private javax.swing.JDesktopPane Desktop;
     private javax.swing.JPanel ExtraPanel;
@@ -1335,24 +1407,30 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuItemSave;
     private javax.swing.JCheckBoxMenuItem MenuItemStatusBar;
     private javax.swing.JMenu MenuView;
+    private javax.swing.JPanel PanelAntialiasingAndTransparency;
     private javax.swing.JPanel PanelBinary;
     private javax.swing.JPanel PanelBrightness;
     private javax.swing.JPanel PanelContrast;
+    private javax.swing.JPanel PanelDraw;
+    private javax.swing.JPanel PanelFillColorType;
     private javax.swing.JPanel PanelFilter;
+    private javax.swing.JPanel PanelImage;
     private javax.swing.JPanel PanelRotation;
     private javax.swing.JPanel PanelScala;
     private javax.swing.JPanel PanelSin;
+    private javax.swing.JPanel PanelStatus;
     private javax.swing.JPanel PanelThresholding;
     private javax.swing.JTextField PixelValue;
+    private javax.swing.JPanel ShapesColorBar;
     private javax.swing.JSlider SliderBinary;
     private javax.swing.JSlider SliderBrightness;
+    private javax.swing.JSlider SliderBrightness1;
     private javax.swing.JSlider SliderRotation;
     private javax.swing.JSlider SliderThresholding;
     private javax.swing.JSpinner SpinnerThick;
+    private javax.swing.JPanel ThickColor;
     private javax.swing.JPanel ToolBar;
     private javax.swing.JPanel ToolsAndWindow;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     // End of variables declaration//GEN-END:variables
 }
