@@ -13,6 +13,7 @@ import java.awt.image.RescaleOp;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -25,7 +26,7 @@ import sm.image.LookupTableProducer;
 
 /**
  *
- * @author Hasbr
+ * @author Darth-ATA
  */
 public class MainJFrame extends javax.swing.JFrame {
     public static final int C_BRIGHTNESS = 0;
@@ -186,8 +187,6 @@ public class MainJFrame extends javax.swing.JFrame {
         MenuItemStatusBar = new javax.swing.JCheckBoxMenuItem();
         MenuItemFormBar = new javax.swing.JCheckBoxMenuItem();
         MenuItemAttributeBar = new javax.swing.JCheckBoxMenuItem();
-        ImageMenu = new javax.swing.JMenu();
-        MenuItemImageSize = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -304,8 +303,6 @@ public class MainJFrame extends javax.swing.JFrame {
         ButtonGroupForms.add(ButtonArc);
         ButtonArc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/linea.png"))); // NOI18N
         ButtonArc.setToolTipText("Point");
-        ButtonArc.setMaximumSize(new java.awt.Dimension(57, 33));
-        ButtonArc.setMinimumSize(new java.awt.Dimension(57, 33));
         ButtonArc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ButtonArcActionPerformed(evt);
@@ -708,18 +705,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
         MenuBar.add(MenuView);
 
-        ImageMenu.setText("Image");
-
-        MenuItemImageSize.setText("Image size");
-        MenuItemImageSize.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuItemImageSizeActionPerformed(evt);
-            }
-        });
-        ImageMenu.add(MenuItemImageSize);
-
-        MenuBar.add(ImageMenu);
-
         setJMenuBar(MenuBar);
 
         pack();
@@ -788,16 +773,21 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     private void ButtonNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonNewActionPerformed
         // TODO add your handling code here:
-        InternalWindow currentWindow = new InternalWindow(this);
-        Desktop.add(currentWindow);
-        currentWindow.setVisible(true);
-        
-        BufferedImage img;
-        img = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
-        Graphics g = img.getGraphics();
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, 300, 300);
-        currentWindow.getCanvass2D().setImg(img);
+        ArrayList<Integer> options = WindowDimension.showWindowDimension();
+        if(options != null){
+            InternalWindow currentWindow = new InternalWindow(this);
+            currentWindow.setTitle("New");
+            currentWindow.setSize(options.get(0)+100, options.get(1)+100);
+            Desktop.add(currentWindow);
+            currentWindow.setVisible(true);
+            
+            BufferedImage img;
+            img = new BufferedImage(options.get(0), options.get(1), BufferedImage.TYPE_INT_RGB);
+            Graphics g = img.getGraphics();
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, options.get(0), options.get(1));
+            currentWindow.getCanvass2D().setImg(img);
+        }
     }//GEN-LAST:event_ButtonNewActionPerformed
 
     private void ButtonOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonOpenActionPerformed
@@ -1002,24 +992,6 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_MenuItemSaveActionPerformed
-
-    private void MenuItemImageSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemImageSizeActionPerformed
-        // TODO add your handling code here:
-        InternalWindow currentWindow = (InternalWindow) Desktop.getSelectedFrame();
-        if (currentWindow != null){
-            BufferedImage imgSource = currentWindow.getCanvass2D().getImg(true);
-            if (imgSource != null){
-                try{
-                    RescaleOp rop = new RescaleOp(1.0F, 100.0F, null);
-                    BufferedImage imgdest = rop.filter(imgSource, null);
-                    currentWindow.getCanvass2D().setImg(imgdest);
-                    currentWindow.getCanvass2D().repaint();
-                } catch(IllegalArgumentException e){
-                    System.err.println(e.getLocalizedMessage());
-                }
-            }
-        }
-    }//GEN-LAST:event_MenuItemImageSizeActionPerformed
     
     private void updatePanelExtra(){
         this.changingBrightness = false;
@@ -1396,12 +1368,10 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JDesktopPane Desktop;
     private javax.swing.JPanel ExtraPanel;
     private javax.swing.JPanel FormsBar;
-    private javax.swing.JMenu ImageMenu;
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenu MenuFile;
     private javax.swing.JCheckBoxMenuItem MenuItemAttributeBar;
     private javax.swing.JCheckBoxMenuItem MenuItemFormBar;
-    private javax.swing.JMenuItem MenuItemImageSize;
     private javax.swing.JMenuItem MenuItemNew;
     private javax.swing.JMenuItem MenuItemOpen;
     private javax.swing.JMenuItem MenuItemSave;

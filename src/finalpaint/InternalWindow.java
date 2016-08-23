@@ -9,7 +9,7 @@ import sm.ata.ui.ImageCanvass2D;
 
 /**
  *
- * @author Hasbr
+ * @author Darth-ATA
  */
 public class InternalWindow extends javax.swing.JInternalFrame {
 
