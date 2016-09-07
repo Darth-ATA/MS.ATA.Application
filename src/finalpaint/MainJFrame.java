@@ -5,12 +5,10 @@
  */
 package finalpaint;
 
-import com.sun.pisces.GradientColorMap;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +18,6 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
-import javax.swing.JSpinner;
 import sm.ata.graphics.Canvass2D;
 import static sm.ata.shapes.GAttribute.DIAGONAL_GRADIENT;
 import static sm.ata.shapes.GAttribute.FILL_GRADIENT;
@@ -32,7 +29,9 @@ import sm.ata.ui.ImageCanvass2D;
 import sm.image.LookupTableProducer;
 
 /**
- *
+ * This is the created app for use all the functionalities provided by the
+ * SM.ATA.LIBRARY.
+ * 
  * @author Darth-ATA
  */
 public class MainJFrame extends javax.swing.JFrame {
@@ -76,19 +75,7 @@ public class MainJFrame extends javax.swing.JFrame {
             // Color button
             this.ButtonShapeColor.setBackground(currentCanvass.getColor());
             this.ButtonGradientColor.setBackground(currentCanvass.getGradientColor());
-            /*if (currentCanvass.getColor() == Color.BLACK)
-                this.ComboBoxColor.setSelectedItem("Black");
-            else if (currentCanvass.getColor() == Color.RED)
-                this.ComboBoxColor.setSelectedItem("Red ");
-            else if (currentCanvass.getColor() == Color.BLUE)
-                this.ComboBoxColor.setSelectedItem("Blue ");
-            else if (currentCanvass.getColor() == Color.WHITE)
-                this.ComboBoxColor.setSelectedItem("White ");
-            else if (currentCanvass.getColor() == Color.YELLOW)
-                 this.ComboBoxColor.setSelectedItem("Yellow");
-            else
-                this.ComboBoxColor.setSelectedItem("Green ");*/
-
+            
             // Figure mode button
             switch (currentCanvass.getFigureMode()){
                 case Canvass2D.M_POINTS:        this.ButtonPoint.setSelected(true);
@@ -110,8 +97,7 @@ public class MainJFrame extends javax.swing.JFrame {
             this.SpinnerThick.setValue(currentWindow.getCanvass2D().getThick());
             // Smooth button
             this.ButtonSmooth.setSelected(currentWindow.getCanvass2D().isSmooth());
-            // Transparency button
-            //this.ButtonTransparency.setSelected(currentWindow.getCanvass2D().isTransparency());
+            
             this.updatePanelExtra();                      
         }
     }
@@ -143,6 +129,7 @@ public class MainJFrame extends javax.swing.JFrame {
         ButtonRectangle = new javax.swing.JToggleButton();
         ButtonEllipse = new javax.swing.JToggleButton();
         ButtonArc = new javax.swing.JToggleButton();
+        ButtonQuadCurve = new javax.swing.JToggleButton();
         ButtonEdit = new javax.swing.JToggleButton();
         PanelFillColorType = new javax.swing.JPanel();
         ComboBoxFill = new javax.swing.JComboBox<>();
@@ -321,6 +308,16 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
         FormsBar.add(ButtonArc);
+
+        ButtonGroupForms.add(ButtonQuadCurve);
+        ButtonQuadCurve.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/vector-path-curve.png"))); // NOI18N
+        ButtonQuadCurve.setToolTipText("Point");
+        ButtonQuadCurve.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonQuadCurveActionPerformed(evt);
+            }
+        });
+        FormsBar.add(ButtonQuadCurve);
 
         ButtonGroupForms.add(ButtonEdit);
         ButtonEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/seleccion.png"))); // NOI18N
@@ -1419,6 +1416,15 @@ public class MainJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ComboBoxGradientDirectionActionPerformed
 
+    private void ButtonQuadCurveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonQuadCurveActionPerformed
+        // TODO add your handling code here:
+        InternalWindow currentWindow;
+        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
+        if (currentWindow != null)
+            currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_QUAD_CURVE);
+        changeTextStatus("Curve with 1 control point");
+    }//GEN-LAST:event_ButtonQuadCurveActionPerformed
+
     /**
      * Changes the text in the PixelTextStatus
      * @param p the point of the cursor
@@ -1490,6 +1496,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton ButtonOpen;
     private javax.swing.JButton ButtonPlusBinary;
     private javax.swing.JToggleButton ButtonPoint;
+    private javax.swing.JToggleButton ButtonQuadCurve;
     private javax.swing.JToggleButton ButtonRectangle;
     private javax.swing.JButton ButtonReduce;
     private javax.swing.JButton ButtonSave;
