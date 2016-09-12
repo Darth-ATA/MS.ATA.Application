@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import sm.ata.graphics.Canvass2D;
+import sm.ata.shapes.GAttribute;
 import static sm.ata.shapes.GAttribute.DIAGONAL_GRADIENT;
 import static sm.ata.shapes.GAttribute.FILL_GRADIENT;
 import static sm.ata.shapes.GAttribute.FILL_OFF;
@@ -75,6 +76,7 @@ public class MainJFrame extends javax.swing.JFrame {
             // Color button
             this.ButtonShapeColor.setBackground(currentCanvass.getColor());
             this.ButtonGradientColor.setBackground(currentCanvass.getGradientColor());
+            this.ButtonColorBorder.setBackground(currentCanvass.getBorderColor());
             
             // Figure mode button
             switch (currentCanvass.getFigureMode()){
@@ -86,13 +88,21 @@ public class MainJFrame extends javax.swing.JFrame {
                                                 break;
                 case Canvass2D.M_ELLIPSES:      this.ButtonEllipse.setSelected(true);
                                                 break;
+                case Canvass2D.M_QUAD_CURVE:    this.ButtonQuadCurve.setSelected(true);
+                                                break;
+                case Canvass2D.M_POLYGON:       this.ButtonPolygon.setSelected(true);
+                                                break;
             }
-
-            // Fill button
-            if(currentWindow.getCanvass2D().getFillMode() == FILL_OFF)
-                this.ButtonFill.setSelected(false);
-            else
-                this.ButtonFill.setSelected(true);
+            
+            switch (currentCanvass.getFillMode()){
+                case GAttribute.FILL_OFF:       this.ComboBoxFill.setSelectedIndex(0);
+                                                break;
+                case GAttribute.FILL_ON:        this.ComboBoxFill.setSelectedIndex(1);
+                                                break;
+                case GAttribute.FILL_GRADIENT:  this.ComboBoxFill.setSelectedIndex(2);
+                                                break;
+            }
+            
             // Thickness spinner
             this.SpinnerThick.setValue(currentWindow.getCanvass2D().getThick());
             // Smooth button
@@ -128,8 +138,8 @@ public class MainJFrame extends javax.swing.JFrame {
         ButtonLine = new javax.swing.JToggleButton();
         ButtonRectangle = new javax.swing.JToggleButton();
         ButtonEllipse = new javax.swing.JToggleButton();
-        ButtonArc = new javax.swing.JToggleButton();
         ButtonQuadCurve = new javax.swing.JToggleButton();
+        ButtonPolygon = new javax.swing.JToggleButton();
         ButtonEdit = new javax.swing.JToggleButton();
         PanelFillColorType = new javax.swing.JPanel();
         ComboBoxFill = new javax.swing.JComboBox<>();
@@ -144,9 +154,6 @@ public class MainJFrame extends javax.swing.JFrame {
         PanelAntialiasingAndTransparency = new javax.swing.JPanel();
         ButtonSmooth = new javax.swing.JToggleButton();
         SliderBrightness1 = new javax.swing.JSlider();
-        ShapesColorBar = new javax.swing.JPanel();
-        ComboBoxColor = new javax.swing.JComboBox<>();
-        ButtonFill = new javax.swing.JToggleButton();
         PanelImage = new javax.swing.JPanel();
         PanelBrightness = new javax.swing.JPanel();
         SliderBrightness = new javax.swing.JSlider();
@@ -237,14 +244,14 @@ public class MainJFrame extends javax.swing.JFrame {
         );
         DesktopLayout.setVerticalGroup(
             DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 531, Short.MAX_VALUE)
+            .addGap(0, 446, Short.MAX_VALUE)
         );
 
         ToolsAndWindow.add(Desktop, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(ToolsAndWindow, java.awt.BorderLayout.CENTER);
 
-        BotPanel.setPreferredSize(new java.awt.Dimension(130, 215));
+        BotPanel.setPreferredSize(new java.awt.Dimension(130, 300));
         BotPanel.setLayout(new java.awt.BorderLayout());
 
         ExtraPanel.setMinimumSize(new java.awt.Dimension(1196, 50));
@@ -299,16 +306,6 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         FormsBar.add(ButtonEllipse);
 
-        ButtonGroupForms.add(ButtonArc);
-        ButtonArc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/linea.png"))); // NOI18N
-        ButtonArc.setToolTipText("Point");
-        ButtonArc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonArcActionPerformed(evt);
-            }
-        });
-        FormsBar.add(ButtonArc);
-
         ButtonGroupForms.add(ButtonQuadCurve);
         ButtonQuadCurve.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/vector-path-curve.png"))); // NOI18N
         ButtonQuadCurve.setToolTipText("Point");
@@ -318,6 +315,16 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
         FormsBar.add(ButtonQuadCurve);
+
+        ButtonGroupForms.add(ButtonPolygon);
+        ButtonPolygon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/polygon.png"))); // NOI18N
+        ButtonPolygon.setToolTipText("Point");
+        ButtonPolygon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonPolygonActionPerformed(evt);
+            }
+        });
+        FormsBar.add(ButtonPolygon);
 
         ButtonGroupForms.add(ButtonEdit);
         ButtonEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/seleccion.png"))); // NOI18N
@@ -335,6 +342,7 @@ public class MainJFrame extends javax.swing.JFrame {
         PanelFillColorType.setBorder(javax.swing.BorderFactory.createTitledBorder("Shape Color and Gradient"));
 
         ComboBoxFill.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Not filled", "Solid", "Gradient" }));
+        ComboBoxFill.setEnabled(false);
         ComboBoxFill.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ComboBoxFillActionPerformed(evt);
@@ -382,11 +390,6 @@ public class MainJFrame extends javax.swing.JFrame {
         ThickColor.add(SpinnerThick);
 
         ButtonColorBorder.setBackground(new java.awt.Color(0, 0, 0));
-        ButtonColorBorder.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ButtonColorBorderMouseClicked(evt);
-            }
-        });
         ButtonColorBorder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ButtonColorBorderActionPerformed(evt);
@@ -396,7 +399,12 @@ public class MainJFrame extends javax.swing.JFrame {
 
         BorderBar.add(ThickColor, java.awt.BorderLayout.PAGE_END);
 
-        ComboBoxBorderType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboBoxBorderType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Continuous line", "Broken line" }));
+        ComboBoxBorderType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboBoxBorderTypeActionPerformed(evt);
+            }
+        });
         BorderBar.add(ComboBoxBorderType, java.awt.BorderLayout.CENTER);
 
         PanelDraw.add(BorderBar);
@@ -426,31 +434,9 @@ public class MainJFrame extends javax.swing.JFrame {
 
         PanelDraw.add(PanelAntialiasingAndTransparency);
 
-        ShapesColorBar.setBorder(javax.swing.BorderFactory.createTitledBorder("Shapes Color"));
-
-        ComboBoxColor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Black", "White ", "Red ", "Blue ", "Green ", "Yellow" }));
-        ComboBoxColor.setToolTipText("Color");
-        ComboBoxColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ComboBoxColorActionPerformed(evt);
-            }
-        });
-        ShapesColorBar.add(ComboBoxColor);
-
-        ButtonFill.setIcon(new javax.swing.ImageIcon(getClass().getResource("/finalpaint/icons/rellenar.png"))); // NOI18N
-        ButtonFill.setToolTipText("Fill");
-        ButtonFill.setPreferredSize(null);
-        ButtonFill.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonFillActionPerformed(evt);
-            }
-        });
-        ShapesColorBar.add(ButtonFill);
-
-        PanelDraw.add(ShapesColorBar);
-
         ExtraPanel.add(PanelDraw, java.awt.BorderLayout.PAGE_START);
 
+        PanelImage.setMinimumSize(new java.awt.Dimension(1196, 200));
         PanelImage.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         PanelBrightness.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Brightness"));
@@ -672,7 +658,7 @@ public class MainJFrame extends javax.swing.JFrame {
         BarStatus.setBorder(null);
         BarStatus.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         BarStatus.setEnabled(false);
-        BarStatus.setPreferredSize(new java.awt.Dimension(140, 16));
+        BarStatus.setPreferredSize(new java.awt.Dimension(300, 16));
         PanelStatus.add(BarStatus, java.awt.BorderLayout.LINE_START);
 
         PixelValue.setEditable(false);
@@ -765,6 +751,9 @@ public class MainJFrame extends javax.swing.JFrame {
         if (currentWindow != null)
             currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_POINTS);
         changeTextStatus("Point");
+        this.ComboBoxFill.setEnabled(false);
+        this.ComboBoxGradientDirection.setEnabled(false);
+        this.ButtonGradientColor.setEnabled(false);
     }//GEN-LAST:event_ButtonPointActionPerformed
     
     /**
@@ -779,6 +768,9 @@ public class MainJFrame extends javax.swing.JFrame {
         if (currentWindow != null)
             currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_LINES);
         changeTextStatus("Line");
+        this.ComboBoxFill.setEnabled(false);
+        this.ComboBoxGradientDirection.setEnabled(false);
+        this.ButtonGradientColor.setEnabled(false);
     }//GEN-LAST:event_ButtonLineActionPerformed
     
     /**
@@ -793,6 +785,11 @@ public class MainJFrame extends javax.swing.JFrame {
         if (currentWindow != null)
             currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_RECTANGLES);
         changeTextStatus("Rectangle");
+        this.ComboBoxFill.setEnabled(true);
+        if(this.ComboBoxFill.getSelectedIndex() == 2){
+            this.ComboBoxGradientDirection.setEnabled(true);
+            this.ButtonGradientColor.setEnabled(true);
+        }
     }//GEN-LAST:event_ButtonRectangleActionPerformed
     
     /**
@@ -807,6 +804,11 @@ public class MainJFrame extends javax.swing.JFrame {
         if (currentWindow != null)
             currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_ELLIPSES);
         changeTextStatus("Ellipse");
+        this.ComboBoxFill.setEnabled(true);
+        if(this.ComboBoxFill.getSelectedIndex() == 2){
+            this.ComboBoxGradientDirection.setEnabled(true);
+            this.ButtonGradientColor.setEnabled(true);
+        }
     }//GEN-LAST:event_ButtonEllipseActionPerformed
     
     /**
@@ -887,9 +889,7 @@ public class MainJFrame extends javax.swing.JFrame {
         else
             this.BarStatus.setVisible(true);
     }//GEN-LAST:event_MenuItemStatusBarActionPerformed
-    
-   
-   
+
     /**
      * This method take the event of action performed and change the edit
      * in the canvass
@@ -902,23 +902,6 @@ public class MainJFrame extends javax.swing.JFrame {
         if (currentWindow != null)
             currentWindow.getCanvass2D().changeEditMode();
     }//GEN-LAST:event_ButtonEditActionPerformed
-
-    /**
-     * This method take the event of action performed and change the draw in the
-     * canvass
-     * @param evt action event
-     */
-    private void ButtonFillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonFillActionPerformed
-        // TODO add your handling code here:
-        InternalWindow currentWindow;
-        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
-        if (currentWindow != null){
-            if (currentWindow.getCanvass2D().getFillMode() == FILL_OFF)
-                currentWindow.getCanvass2D().setFillMode(FILL_ON); 
-            else
-                currentWindow.getCanvass2D().setFillMode(FILL_OFF);
-        }
-    }//GEN-LAST:event_ButtonFillActionPerformed
 
     /**
      * This method take the event of action performed and change the thick in
@@ -955,33 +938,8 @@ public class MainJFrame extends javax.swing.JFrame {
      * @param evt action event
      */
     private void MenuItemAttributeBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemAttributeBarActionPerformed
-        // TODO add your handling code here:
-        if (this.ShapesColorBar.isVisible())
-            this.ShapesColorBar.setVisible(false);
-        else
-            this.ShapesColorBar.setVisible(true);
+        
     }//GEN-LAST:event_MenuItemAttributeBarActionPerformed
-
-    private void ComboBoxColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxColorActionPerformed
-        // TODO add your handling code here:
-        String color = (String) this.ComboBoxColor.getSelectedItem();
-        InternalWindow currentWindow;
-        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
-        if (currentWindow != null){
-            if ("Black".equals(color))
-                currentWindow.getCanvass2D().setColor(Color.BLACK);
-            else if ("White ".equals(color))
-                currentWindow.getCanvass2D().setColor(Color.WHITE);
-            else if ("Blue ".equals(color)) 
-                currentWindow.getCanvass2D().setColor(Color.BLUE);
-            else if ("Green ".equals(color))
-                currentWindow.getCanvass2D().setColor(Color.GREEN);
-            else if ("Yellow".equals(color))
-                currentWindow.getCanvass2D().setColor(Color.YELLOW);
-            else if ("Red ".equals(color))
-                currentWindow.getCanvass2D().setColor(Color.RED);
-        }
-    }//GEN-LAST:event_ComboBoxColorActionPerformed
 
     private void MenuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemNewActionPerformed
         // TODO add your handling code here:
@@ -1308,15 +1266,6 @@ public class MainJFrame extends javax.swing.JFrame {
         
     }//GEN-LAST:event_SliderThresholdingStateChanged
 
-    private void ButtonArcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonArcActionPerformed
-        // TODO add your handling code here:
-        InternalWindow currentWindow;
-        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
-        if (currentWindow != null)
-            currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_ARC);
-        changeTextStatus("Arc");
-    }//GEN-LAST:event_ButtonArcActionPerformed
-
     private void SliderBrightness1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_SliderBrightness1StateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_SliderBrightness1StateChanged
@@ -1330,13 +1279,6 @@ public class MainJFrame extends javax.swing.JFrame {
             currentWindow.getCanvass2D().changeAntialiashing();
     }
 //GEN-LAST:event_ButtonSmoothActionPerformed
-
-    private void ButtonColorBorderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonColorBorderMouseClicked
-        // TODO add your handling code here:
-        InternalWindow currentWindow;
-        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
-        
-    }//GEN-LAST:event_ButtonColorBorderMouseClicked
 
     private void ComboBoxFillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxFillActionPerformed
         // TODO add your handling code here:
@@ -1365,6 +1307,17 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void ButtonColorBorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonColorBorderActionPerformed
         // TODO add your handling code here:
+        InternalWindow currentWindow;
+        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
+        if (currentWindow != null){
+            Color newColor = JColorChooser.showDialog(MainJFrame.this,
+                    "Choose color for the border",
+                    this.ButtonColorBorder.getBackground());
+            if (newColor != null){
+                this.ButtonColorBorder.setBackground(newColor);
+                currentWindow.getCanvass2D().setBorderColor(this.ButtonColorBorder.getBackground());
+            }
+        }
     }//GEN-LAST:event_ButtonColorBorderActionPerformed
 
     private void ButtonGradientColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonGradientColorActionPerformed
@@ -1423,7 +1376,42 @@ public class MainJFrame extends javax.swing.JFrame {
         if (currentWindow != null)
             currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_QUAD_CURVE);
         changeTextStatus("Curve with 1 control point");
+        this.ComboBoxFill.setEnabled(true);
+        if(this.ComboBoxFill.getSelectedIndex() == 2){
+            this.ComboBoxGradientDirection.setEnabled(true);
+            this.ButtonGradientColor.setEnabled(true);
+        }
     }//GEN-LAST:event_ButtonQuadCurveActionPerformed
+
+    private void ButtonPolygonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPolygonActionPerformed
+        // TODO add your handling code here:
+        InternalWindow currentWindow;
+        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
+        if (currentWindow != null)
+            currentWindow.getCanvass2D().setFigureMode(Canvass2D.M_POLYGON);
+        changeTextStatus("Polygon");
+        this.ComboBoxFill.setEnabled(true);
+        if(this.ComboBoxFill.getSelectedIndex() == 2){
+            this.ComboBoxGradientDirection.setEnabled(true);
+            this.ButtonGradientColor.setEnabled(true);
+        }
+    }//GEN-LAST:event_ButtonPolygonActionPerformed
+
+    private void ComboBoxBorderTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxBorderTypeActionPerformed
+        // TODO add your handling code here:
+        InternalWindow currentWindow;
+        currentWindow = (InternalWindow)Desktop.getSelectedFrame();
+        if (currentWindow != null){
+            switch(ComboBoxBorderType.getSelectedIndex()){
+                case GAttribute.S_CONTINUOUS: 
+                    currentWindow.getCanvass2D().setBorderStyle(GAttribute.S_CONTINUOUS);
+                    break;
+                case GAttribute.S_BROKEN:
+                    currentWindow.getCanvass2D().setBorderStyle(GAttribute.S_BROKEN);
+                    break;
+            }
+        }
+    }//GEN-LAST:event_ComboBoxBorderTypeActionPerformed
 
     /**
      * Changes the text in the PixelTextStatus
@@ -1478,13 +1466,11 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton Button180G;
     private javax.swing.JButton Button270G;
     private javax.swing.JButton Button90G;
-    private javax.swing.JToggleButton ButtonArc;
     private javax.swing.JButton ButtonAugmentate;
     private javax.swing.JButton ButtonColorBorder;
     private javax.swing.JButton ButtonDarkerContrast;
     private javax.swing.JToggleButton ButtonEdit;
     private javax.swing.JToggleButton ButtonEllipse;
-    private javax.swing.JToggleButton ButtonFill;
     private javax.swing.JButton ButtonGradient;
     private javax.swing.JButton ButtonGradientColor;
     private javax.swing.ButtonGroup ButtonGroupForms;
@@ -1496,6 +1482,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton ButtonOpen;
     private javax.swing.JButton ButtonPlusBinary;
     private javax.swing.JToggleButton ButtonPoint;
+    private javax.swing.JToggleButton ButtonPolygon;
     private javax.swing.JToggleButton ButtonQuadCurve;
     private javax.swing.JToggleButton ButtonRectangle;
     private javax.swing.JButton ButtonReduce;
@@ -1505,7 +1492,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton ButtonSin;
     private javax.swing.JToggleButton ButtonSmooth;
     private javax.swing.JComboBox<String> ComboBoxBorderType;
-    private javax.swing.JComboBox<String> ComboBoxColor;
     private javax.swing.JComboBox<String> ComboBoxFill;
     private javax.swing.JComboBox<String> ComboBoxFilter;
     private javax.swing.JComboBox<String> ComboBoxGradientDirection;
@@ -1535,7 +1521,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel PanelStatus;
     private javax.swing.JPanel PanelThresholding;
     private javax.swing.JTextField PixelValue;
-    private javax.swing.JPanel ShapesColorBar;
     private javax.swing.JSlider SliderBinary;
     private javax.swing.JSlider SliderBrightness;
     private javax.swing.JSlider SliderBrightness1;

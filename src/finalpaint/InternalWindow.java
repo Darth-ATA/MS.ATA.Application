@@ -82,6 +82,20 @@ public class InternalWindow extends javax.swing.JInternalFrame {
             }
         });
 
+        imageCanvass2D.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                imageCanvass2DMouseMoved(evt);
+            }
+        });
+        imageCanvass2D.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                imageCanvass2DMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                imageCanvass2DMouseExited(evt);
+            }
+        });
+
         javax.swing.GroupLayout imageCanvass2DLayout = new javax.swing.GroupLayout(imageCanvass2D);
         imageCanvass2D.setLayout(imageCanvass2DLayout);
         imageCanvass2DLayout.setHorizontalGroup(
